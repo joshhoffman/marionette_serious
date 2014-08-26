@@ -1,5 +1,5 @@
 ContactManager.module("Entities", function(Entities, ContactManager, Backbone, Marionette, $, _){
-    Entities.Contact = Backbone.Model.extend({
+    Entities.Contact = Entities.BaseModel.extend({
         urlRoot: "contacts",
 
         defaults: {
@@ -24,6 +24,21 @@ ContactManager.module("Entities", function(Entities, ContactManager, Backbone, M
             if( ! _.isEmpty(errors)){
                 return errors;
             }
+        },
+
+        sync: function (method, model, options) {
+            console.log('contact sync called');
+
+            return Entities.BaseModel.prototype.sync.call(this, method, model, options);
+        },
+
+        parse: function(response) {
+            var data = response;
+            if(response && response.contact) {
+                data = data.contact;
+            }
+            data.fullName = data.firstName + " " + data.lastName;
+            return data;
         }
     });
 
